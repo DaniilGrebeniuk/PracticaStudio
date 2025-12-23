@@ -1,0 +1,26 @@
+package com.example.mypractica.data
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
+@Database(entities = [User::class], version = 3)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                Room.databaseBuilder(
+                    context = context.applicationContext,
+                    klass = AppDatabase::class.java,
+                    name = "user_database2"
+                ).fallbackToDestructiveMigration()
+                    .build().also { INSTANCE = it }
+            }
+    }
+}
